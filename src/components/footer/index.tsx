@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="fixed bottom-0 w-full text-center pb-1">
+    <footer className="flex flex-col justify-center items-center py-3">
       <p>&copy; 2023 eWorkers Cartago</p>
     </footer>
   );
