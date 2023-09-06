@@ -3,8 +3,8 @@ import Link from "next/link";
 
 export default function Navbar() {
   return (
-    <nav className="bg-gradient-to-t to-neutral-900 from-transparent fixed w-full">
-      <div className="container mx-auto py-3">
+    <nav className="bg-gradient-to-t to-neutral-900 from-transparent absolute w-full">
+      <div className="container mx-auto p-3">
         <div className="flex flex-row justify-between items-center">
           <Link href={"/"}>
             <Image
