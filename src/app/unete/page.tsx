@@ -5,6 +5,7 @@ import { createMember } from "../actions";
 import { InputField, SelectField, Notification } from "@/components/form";
 import { useState, useRef } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
+import Link from "next/link";
 
 const schema = Yup.object().shape({
   firstName: Yup.string()
@@ -66,7 +67,7 @@ export default function Index() {
 
   const handleRecaptchaChange = (value: string | null) => {
     setRecaptchaValue(value);
-    formik.setFieldValue("recaptcha", value || ""); // Actualiza el valor del campo de reCAPTCHA en el formulario
+    formik.setFieldValue("recaptcha", value || "");
   };
 
   return (
@@ -155,7 +156,7 @@ export default function Index() {
 
           <div className="flex flex-col justify-center items-center gap-2">
             <ReCAPTCHA
-              sitekey="6LfUjQMoAAAAAJny4XFsiJ6Eqv-iVBsFywIsRnfc"
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
               ref={recaptchaRef}
               onChange={handleRecaptchaChange}
             />
