@@ -1,73 +1,48 @@
 "use client";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { MemberProps, MemberSchema } from "@/schemas";
 import { createMember } from "../actions";
-import { InputField, SelectField, Notification } from "@/components/form";
+import {
+  Notification,
+  Submit,
+  Input,
+  Select,
+  Captcha,
+} from "@/components/form";
 import { useState, useRef } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
-import Link from "next/link";
-
-const schema = Yup.object().shape({
-  firstName: Yup.string()
-    .required("Campo obligatorio")
-    .min(2, "El nombre debe contener al menos 2 caracteres"),
-  lastName: Yup.string()
-    .required("Campo obligatorio")
-    .min(2, "El apellido debe contener al menos 2 caracteres"),
-  phone: Yup.string()
-    .required("Campo obligatorio")
-    .matches(/^\d{10}$/, "Número de teléfono inválido (deben ser 10 dígitos)"),
-  email: Yup.string()
-    .email("Debe ser un correo electrónico válido")
-    .required("Campo obligatorio"),
-  job: Yup.string()
-    .required("Campo obligatorio")
-    .min(2, "El oficio debe contener al menos 2 caracteres"),
-  sortJobType: Yup.string()
-    .notOneOf([""], "Selecciona una opción")
-    .required("Campo obligatorio"),
-  recaptcha: Yup.string().required("Completa el reCAPTCHA"),
-});
 
 export default function Index() {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const recaptchaRef = useRef<ReCAPTCHA>(null);
-  const [recaptchaValue, setRecaptchaValue] = useState<string | null>(null);
 
-  const formik = useFormik({
-    initialValues: {
-      firstName: "",
-      lastName: "",
-      phone: "",
-      email: "",
-      job: "",
-      sortJobType: "",
-      recaptcha: "",
-    },
-    validationSchema: schema,
-    onSubmit: async (values) => {
-      try {
-        await createMember(values);
-        setOpen(true);
-        setSuccess(true);
-        setMessage("Te has registrado exitosamente!");
-        formik.resetForm();
-      } catch (error: any) {
-        setOpen(true);
-        setSuccess(false);
-        setMessage(error.message);
-      }
-    },
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setValue,
+    reset,
+  } = useForm<MemberProps>({
+    resolver: zodResolver(MemberSchema),
   });
 
-  const { errors, touched, values, handleChange, handleBlur, handleSubmit } =
-    formik;
+  const processForm: SubmitHandler<MemberProps> = async (data) => {
+    const result = await createMember(data);
 
-  const handleRecaptchaChange = (value: string | null) => {
-    setRecaptchaValue(value);
-    formik.setFieldValue("recaptcha", value || "");
+    if (result.success) {
+      setMessage("¡Gracias por registrarte!");
+      setSuccess(true);
+      setOpen(true);
+      recaptchaRef.current?.reset();
+      reset();
+    } else {
+      setMessage("Hubo un error al registrarte. Inténtalo de nuevo.");
+      setSuccess(false);
+      setOpen(true);
+    }
   };
 
   return (
@@ -80,97 +55,69 @@ export default function Index() {
           lo que ofrecemos.
         </p>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <form
+          onSubmit={handleSubmit(processForm)}
+          className="flex flex-col gap-5"
+        >
           <Notification open={open} setOpen={setOpen} success={success}>
             {message}
           </Notification>
 
-          <InputField
-            id="firstName"
+          <Input
             name="firstName"
-            value={values.firstName}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            register={register}
+            error={errors.firstName}
             placeholder="Tu nombre *"
-            error={
-              errors.firstName && touched.firstName ? errors.firstName : null
-            }
           />
 
-          <InputField
-            id="lastName"
+          <Input
             name="lastName"
-            value={values.lastName}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            register={register}
+            error={errors.lastName}
             placeholder="Tu apellido *"
-            error={errors.lastName && touched.lastName ? errors.lastName : null}
           />
 
-          <InputField
-            id="phone"
+          <Input
             name="phone"
-            value={values.phone}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            register={register}
+            error={errors.phone}
             placeholder="Número de teléfono *"
-            error={errors.phone && touched.phone ? errors.phone : null}
           />
 
-          <InputField
-            id="email"
+          <Input
             name="email"
-            value={values.email}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            register={register}
+            error={errors.email}
             placeholder="Correo electrónico *"
-            error={errors.email && touched.email ? errors.email : null}
           />
 
-          <InputField
-            id="job"
+          <Input
             name="job"
-            value={values.job}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            register={register}
+            error={errors.job}
             placeholder="Ocupación u oficio *"
-            error={errors.job && touched.job ? errors.job : null}
           />
 
-          <SelectField
-            id="sortJobType"
+          <Select
             name="sortJobType"
-            value={values.sortJobType}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            register={register}
             options={[
-              { value: "", label: "Tipo de trabajo" },
+              { value: "", label: "Tipo de trabajo *" },
               { value: "REMOTE", label: "Remoto" },
               { value: "HYBRID", label: "Hibrido" },
               { value: "INOFFICE", label: "En oficina" },
               { value: "UNEMPLOYED", label: "Desempleado" },
             ]}
             error={errors.sortJobType}
-            touched={touched.sortJobType}
           />
 
-          <div className="flex flex-col justify-center items-center gap-2">
-            <ReCAPTCHA
-              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
-              ref={recaptchaRef}
-              onChange={handleRecaptchaChange}
-            />
-            {formik.touched.recaptcha && formik.errors.recaptcha && (
-              <div className="text-sm italic">{formik.errors.recaptcha}</div>
-            )}
-          </div>
+          <Captcha
+            setValue={setValue}
+            error={errors.recaptcha}
+            recaptchaRef={recaptchaRef}
+          />
 
-          <button
-            type="submit"
-            className="bg-yellow-300 px-6 py-3 text-neutral-900 rounded-md hover:bg-yellow-500"
-          >
-            Registrarse
-          </button>
+          <Submit isSubmitting={isSubmitting} />
         </form>
       </div>
     </section>
