@@ -1,15 +1,7 @@
 "use server";
+import { MemberProps } from "@/schemas";
 
-type onCreateMemberProps = {
-  firstName: string;
-  lastName: string;
-  phone: string;
-  email: string;
-  job: string;
-  sortJobType: string;
-};
-
-export async function createMember(values: onCreateMemberProps) {
+export async function createMember(values: MemberProps) {
   const options = {
     method: "POST",
     headers: {
@@ -35,6 +27,14 @@ export async function createMember(values: onCreateMemberProps) {
   const response = await fetch("https://api.brevo.com/v3/contacts", options);
 
   if (!response.ok) {
-    throw new Error(`Error al registrar.`);
+    return {
+      success: false,
+      error: response.statusText,
+    };
   }
+
+  return {
+    success: true,
+    data: response.status,
+  };
 }

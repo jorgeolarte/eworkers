@@ -1,4 +1,6 @@
-import InputField from "./input-field";
-import SelectField from "./select-field";
 import Notification from "./notification";
-export { InputField, SelectField, Notification};
+import Submit from "./submit";
+import Input from "./input";
+import Select from "./select";
+import Captcha from "./captcha";
+export { Notification, Submit, Input, Select, Captcha };
