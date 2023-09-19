@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import React from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { FieldError, UseFormSetValue } from "react-hook-form";
 
@@ -9,10 +9,7 @@ type Props = {
 };
 
 export default function Captcha({ setValue, error, recaptchaRef }: Props) {
-  const [recaptchaValue, setRecaptchaValue] = useState<string | null>(null);
-
   const handleRecaptchaChange = (value: string | null) => {
-    setRecaptchaValue(value);
     setValue("recaptcha", value || "");
   };
 

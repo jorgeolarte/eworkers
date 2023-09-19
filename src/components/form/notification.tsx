@@ -1,7 +1,9 @@
+import React from "react";
+
 type NotificationProps = {
   children?: React.ReactNode;
   open: boolean;
-  setOpen: (opened: boolean) => void;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   success?: boolean;
 };
 
