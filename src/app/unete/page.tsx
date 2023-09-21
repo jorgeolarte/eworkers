@@ -39,25 +39,27 @@ export default function Index() {
       recaptchaRef.current?.reset();
       reset();
     } else {
-      setMessage("Hubo un error al registrarte. Inténtalo de nuevo.");
+      setMessage("Error al registrarte. Inténtalo de nuevo.");
       setSuccess(false);
       setOpen(true);
     }
   };
 
   return (
-    <section className="">
-      <div className="container mx-auto p-5 md:w-1/2 flex flex-col gap-5">
-        <h1 className="text-4xl text-center">Únete a eWorkers Cartago</h1>
-        <p className="text-lg text-center">
-          Aquí encontrarás flexibilidad, crecimiento y mucho networking. Solo
-          tienes que llenar este formulario y estarás listo para aprovechar todo
-          lo que ofrecemos.
-        </p>
+    <section className="px-4 mx-auto max-w-screen-xl text-center py-24">
+      <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl">
+        Únete a eWorkers Cartago
+      </h1>
+      <p className="mb-8 text-lg font-normal text-gray-300 lg:text-xl sm:px-16 lg:px-48">
+        Aquí encontrarás flexibilidad, crecimiento y mucho networking. Solo
+        tienes que llenar este formulario y estarás listo para aprovechar todo
+        lo que ofrecemos.
+      </p>
 
+      <div className="mx-auto w-4/5 md:w-2/3">
         <form
           onSubmit={handleSubmit(processForm)}
-          className="flex flex-col gap-5"
+          className="flex flex-col justify-center gap-3"
         >
           <Notification open={open} setOpen={setOpen} success={success}>
             {message}

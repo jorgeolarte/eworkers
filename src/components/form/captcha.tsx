@@ -1,6 +1,7 @@
 import React from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { FieldError, UseFormSetValue } from "react-hook-form";
+import ErrorMessage from "./error-message";
 
 type Props = {
   setValue: UseFormSetValue<any>;
@@ -19,8 +20,9 @@ export default function Captcha({ setValue, error, recaptchaRef }: Props) {
         sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
         ref={recaptchaRef}
         onChange={handleRecaptchaChange}
+        theme="dark"
       />
-      {error && <div className="text-sm italic">{error.message}</div>}
+      <ErrorMessage error={error} />
     </div>
   );
 }

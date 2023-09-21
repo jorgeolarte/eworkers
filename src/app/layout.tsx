@@ -2,10 +2,10 @@ import React from "react";
 import Navbar from "@/components/navbar";
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import Footer from "@/components/footer";
 
-const inter = Inter({ subsets: ["latin"] });
+const montserrat = Montserrat({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "eWorkers Cartago",
@@ -32,9 +32,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-neutral-900 text-white`}>
+      <body
+        className={`${montserrat.className} text-white bg-[url('/community.jpeg')] bg-cover bg-center bg-gray-700 bg-blend-multiply min-h-screen`}
+      >
         <Navbar />
-        <main className="pt-14">{children}</main>
+        <main>{children}</main>
         <Footer />
       </body>
     </html>
