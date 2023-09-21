@@ -1,5 +1,6 @@
 import { FieldError } from "react-hook-form";
-import Image from "next/image";
+import { Phone, Email, ProfileCard, DesktopPc } from "../icons";
+import ErrorMessage from "./error-message";
 
 type Props = {
   name: string;
@@ -10,24 +11,26 @@ type Props = {
 
 export default function Input({ name, register, error, placeholder }: Props) {
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-row justify-center items-center border-0 border-b-2 border-b-yellow-300 bg-neutral-900 text-white focus:border-b-yellow-400">
-        <label htmlFor={name} className="bg-yellow-300 p-2">
-          <Image
-            priority
-            src={`/icons/${name}.svg`}
-            alt={placeholder}
-            width={24}
-            height={24}
-          />
-        </label>
+    <div className="flex flex-col gap-1">
+      <div className="relative">
+        <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+          {name === "firstName" && (
+            <ProfileCard className="w-4 h-4 text-gray-400" />
+          )}
+          {name === "lastName" && (
+            <ProfileCard className="w-4 h-4 text-gray-400" />
+          )}
+          {name === "phone" && <Phone className="w-4 h-4 text-gray-400" />}
+          {name === "email" && <Email className="w-4 h-4 text-gray-400" />}
+          {name === "job" && <DesktopPc className="w-4 h-4 text-gray-400" />}
+        </div>
         <input
           {...register(name, { required: true })}
           placeholder={placeholder}
-          className="flex-grow bg-transparent outline-none p-2"
+          className="bg-gray-700 border border-gray-600 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full pl-10 p-2.5 placeholder-gray-400 text-white"
         />
       </div>
-      {error && <div className="text-sm italic">{error.message}</div>}
+      <ErrorMessage error={error} />
     </div>
   );
 }
